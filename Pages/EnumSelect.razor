@@ -12,7 +12,15 @@ enum select her
     @*<BlazorEnumSelect.Components.EnumSelectControl TModel="SomeWrappingClassWithSomeEnum" For="@(m => m.SomeEnum)" />*@
 
 
-    <InputSelectEnum @bind-Value="@model.SomeEnum" EmptyTextValue="-1" ShowIntValues="true"></InputSelectEnum>
+    <InputSelectEnum @bind-Value="@model.SomeEnum" EmptyTextValue="-1" ShowIntValues="true" AdditionalCssClasses="custom-select"></InputSelectEnum>
+
+
+  <!--  <Select TValue="int">
+     <SelectItem Value="1">1</SelectItem>
+     <SelectItem Value="2">2</SelectItem>
+     <SelectItem Value="3">3</SelectItem>
+     <SelectItem Value="4">4</SelectItem>
+     </Select>-->
 
 </EditForm>
 

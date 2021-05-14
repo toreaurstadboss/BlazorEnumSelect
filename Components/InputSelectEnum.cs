@@ -15,6 +15,7 @@ namespace BlazorEnumSelect.Models
 
     // Based upon: https://www.meziantou.net/creating-a-inputselect-component-for-enumerations-in-blazor.htm with some additional features
     // The numeric value is sorted ascending numerically
+    // Parameter AdditionalCssClasses can be set to a string to customize the css class(es) of the select. E.g. Blazorise uses "custom-select"
     // Parameter ShowIntValues to show enum value also in the text of option which defaults to true
     // Parameter EmptyTextValue will if set to non null value will check if the int value is equal to this set empty text for the option element
     // Inherit from InputBase so the hard work is already implemented 
@@ -26,7 +27,10 @@ namespace BlazorEnumSelect.Models
         public bool ShowIntValues { get; set; } = true;
 
         [Parameter]
-        public int? EmptyTextValue { get; set; }
+        public int? EmptyTextValue { get; set; }    
+       
+        [Parameter]
+        public string AdditionalCssClasses { get; set; }
 
         private List<object> EnumValuesSortedNumerically = new List<object>();
 
@@ -36,7 +40,8 @@ namespace BlazorEnumSelect.Models
         {
             builder.OpenElement(0, "select");
             builder.AddMultipleAttributes(1, AdditionalAttributes);
-            builder.AddAttribute(2, "class", CssClass);
+            string compoundCssClass = !string.IsNullOrWhiteSpace(AdditionalCssClasses) ? $"{AdditionalCssClasses} {CssClass}" : CssClass;
+            builder.AddAttribute(2, "class", compoundCssClass);
             builder.AddAttribute(3, "value", BindConverter.FormatValue(CurrentValueAsString));
             builder.AddAttribute(4, "onchange", EventCallback.Factory.CreateBinder<string>(this, value => CurrentValueAsString = value, CurrentValueAsString, null));          
 
