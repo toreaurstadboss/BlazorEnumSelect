@@ -1,7 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <AssemblyName>ToreAurstadIT.BlazorEnumSelect.SampleClient</AssemblyName>
+    <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ToreAurstadIT.BlazorEnumSelect\ToreAurstadIT.BlazorEnumSelect.csproj" />
+    <ProjectReference Include="..\ToreAurstadIT.BlazorEnumSelect.ClassLibrary\ToreAurstadIT.BlazorEnumSelect.ClassLibrary.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +28,15 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>SomeResources.resx</DependentUpon>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Models\App2.razor">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="App.razor">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
