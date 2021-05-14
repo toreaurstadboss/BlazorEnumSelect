@@ -17,6 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ToreAurstadIT.BlazorEnumSelect\ToreAurstadIT.BlazorEnumSelect.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Resources\SomeResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
