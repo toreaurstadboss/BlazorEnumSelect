@@ -5,14 +5,19 @@
 
 enum select her
 
-<EditForm Model="@someModel">
+<EditForm Model="@model">
 
-    <p>Selected the some enum value: @someModel.SomeEnum</p>
-    <BlazorEnumSelect.Components.EnumSelectControl EnumType="typeof(SomeEnum)" TModel="SomeWrappingClassWithSomeEnum" For="@(m => m.SomeEnum)" />
+    <p>Selected the some enum value: @model.SomeEnum</p>
+    @*<BlazorEnumSelect.Components.EnumSelectControl EnumType="typeof(SomeEnum)" TModel="SomeWrappingClassWithSomeEnum" For="@(m => m.SomeEnum)" />*@
+    @*<BlazorEnumSelect.Components.EnumSelectControl TModel="SomeWrappingClassWithSomeEnum" For="@(m => m.SomeEnum)" />*@
+
+
+    <InputSelectEnum @bind-Value="@model.SomeEnum" EmptyTextValue="-1" ShowIntValues="true"></InputSelectEnum>
+
 </EditForm>
 
 
 @code{
     private SomeEnum someEnum = new SomeEnum();
-    private SomeWrappingClassWithSomeEnum someModel = new SomeWrappingClassWithSomeEnum();
+    private SomeWrappingClassWithSomeEnum model = new SomeWrappingClassWithSomeEnum();
 }

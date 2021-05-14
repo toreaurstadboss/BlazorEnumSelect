@@ -3,8 +3,9 @@
 @using BlazorEnumSelect.Models
 @using System.ComponentModel.DataAnnotations
 @using System.Linq.Expressions
+@using System.Reflection
 
-@typeparam TModel 
+@typeparam TModel
 
 
 <select>
@@ -19,10 +20,10 @@
 
 @code {
 
-    private string ErrorMessageEnumSelectControl { get; set; }
+        private string ErrorMessageEnumSelectControl { get; set; }
 
-    private List<object> EnumValuesSorted { get; set; } = new List<object>();
-
+        private List<object> EnumValuesSorted { get; set; } = new List<object>();
+  
 
     /// <summary>
     /// The type of Enum To create option list for in the select control
@@ -44,48 +45,85 @@
             ErrorMessageEnumSelectControl = "Provide parameter EnumType, which must be the type of an Enum or parameter";
             return;
         }
+
+        if (For != null)
+        {
+            string memberName = GetMemberName(For);
+            MemberInfo member = typeof(TModel).GetMember(memberName).FirstOrDefault();
+            if (member == null)
+            {
+                ErrorMessageEnumSelectControl = $"The For expression points to a non existing member: No such member {memberName} in type {typeof(TModel).ToString()}";
+                return;
+            }
+            if (!member.GetType().IsEnum)
+            {
+                ErrorMessageEnumSelectControl = $"The For expression points to a member which is not an enum: Member {memberName} in type {typeof(TModel).ToString()}";
+                return;
+            }
+            BuildEnumValuesSorted(member.GetType());
+            return;
+
+        }
+
         if (!EnumType.IsEnum)
         {
             ErrorMessageEnumSelectControl = "Provide parameter EnumType, which must be the type of an Enum";
+            return;
         }
-        else
-        {
-            List<object> temp = new List<object>();
-        @foreach (var enumValue in this.EnumType.GetEnumValues())
+
+        BuildEnumValuesSorted(this.EnumType);
+
+    }
+
+    private void BuildEnumValuesSorted(Type t)
+    {
+        List<object> temp = new List<object>();
+        @foreach (var enumValue in t.GetEnumValues())
         {
             temp.Add(enumValue);
         }
         EnumValuesSorted = temp.OrderBy(t => (int)t).ToList();
+
     }
 
-}
-
-
-private string GetEnumDisplayText(object enumValue)
-{
-    Console.WriteLine(enumValue);
-    try
+    // Get the Member name from an expression.
+    // (customer => customer.Name) returns "Name"
+    private static string GetMemberName<T>(Expression<T> expression)
     {
-        string intValuePrefix = ShowIntValues ? $"{(int)enumValue}: " : string.Empty;
-        var resourceManager = System.Resources.ResourceManager.CreateFileBasedResourceManager("SomeResources", "Resources", null);
-        var displayText = enumValue.GetType().GetMember(enumValue.ToString()).FirstOrDefault()?
-            .GetCustomAttributes(typeof(DisplayAttribute), false).FirstOrDefault() as DisplayAttribute;
-        if (displayText != null)
+        return expression.Body switch
         {
-            if (!string.IsNullOrEmpty(displayText.Name) && displayText.ResourceType != null)
-            {
-                //return resourceManager.GetString(displayText.Name);
-            }
-            return intValuePrefix + displayText.Name ?? displayText.Description;
-        }
-        return intValuePrefix + enumValue.ToString();
+            MemberExpression m => m.Member.Name,
+            UnaryExpression u when u.Operand is MemberExpression m => m.Member.Name,
+            _ => throw new NotSupportedException("Expression of type '" + expression.GetType().ToString() + "' is not supported")
+        };
     }
-    catch (Exception err)
+
+
+    private string GetEnumDisplayText(object enumValue)
     {
-        Console.WriteLine(err);
-        return enumValue.ToString();
+        Console.WriteLine(enumValue);
+        try
+        {
+            string intValuePrefix = ShowIntValues ? $"{(int)enumValue}: " : string.Empty;
+            var resourceManager = System.Resources.ResourceManager.CreateFileBasedResourceManager("SomeResources", "Resources", null);
+            var displayText = enumValue.GetType().GetMember(enumValue.ToString()).FirstOrDefault()?
+                .GetCustomAttributes(typeof(DisplayAttribute), false).FirstOrDefault() as DisplayAttribute;
+            if (displayText != null)
+            {
+                if (!string.IsNullOrEmpty(displayText.Name) && displayText.ResourceType != null)
+                {
+                    //return resourceManager.GetString(displayText.Name);
+                }
+                return intValuePrefix + displayText.Name ?? displayText.Description;
+            }
+            return intValuePrefix + enumValue.ToString();
+        }
+        catch (Exception err)
+        {
+            Console.WriteLine(err);
+            return enumValue.ToString();
+        }
     }
-}
 
 
 

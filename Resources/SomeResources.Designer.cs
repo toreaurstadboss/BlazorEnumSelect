@@ -63,18 +63,18 @@ namespace BlazorEnumSelect.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Some resource value F.
         /// </summary>
-        public static string SomeEnumF {
+        public static string SomeTestValueF {
             get {
-                return ResourceManager.GetString("SomeEnumF", resourceCulture);
+                return ResourceManager.GetString("SomeTestValueF", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Some resource value G.
         /// </summary>
-        public static string SomeEnumG {
+        public static string SomeTestValueG {
             get {
-                return ResourceManager.GetString("SomeEnumG", resourceCulture);
+                return ResourceManager.GetString("SomeTestValueG", resourceCulture);
             }
         }
     }
