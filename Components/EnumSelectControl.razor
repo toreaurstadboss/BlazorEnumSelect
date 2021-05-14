@@ -1,0 +1,95 @@
+﻿<h3>EnumSelectControl</h3>
+
+@using BlazorEnumSelect.Models
+@using System.ComponentModel.DataAnnotations
+@using System.Linq.Expressions
+
+@typeparam TModel 
+
+
+<select>
+    @foreach (var enumValue in this.EnumValuesSorted)
+    {
+        <option value="@enumValue">@GetEnumDisplayText(enumValue)</option>
+
+    }
+</select>
+<span>@ErrorMessageEnumSelectControl</span>
+
+
+@code {
+
+    private string ErrorMessageEnumSelectControl { get; set; }
+
+    private List<object> EnumValuesSorted { get; set; } = new List<object>();
+
+
+    /// <summary>
+    /// The type of Enum To create option list for in the select control
+    /// </summary>
+    [Parameter]
+    public Type EnumType { get; set; }
+
+    [Parameter]
+    public Expression<Func<TModel, object>> For { get; set; }
+
+    [Parameter]
+    public bool ShowIntValues { get; set; } = true;
+
+    protected override void OnParametersSet()
+    {
+        EnumValuesSorted.Clear();
+        if (EnumType == null && For == null)
+        {
+            ErrorMessageEnumSelectControl = "Provide parameter EnumType, which must be the type of an Enum or parameter";
+            return;
+        }
+        if (!EnumType.IsEnum)
+        {
+            ErrorMessageEnumSelectControl = "Provide parameter EnumType, which must be the type of an Enum";
+        }
+        else
+        {
+            List<object> temp = new List<object>();
+        @foreach (var enumValue in this.EnumType.GetEnumValues())
+        {
+            temp.Add(enumValue);
+        }
+        EnumValuesSorted = temp.OrderBy(t => (int)t).ToList();
+    }
+
+}
+
+
+private string GetEnumDisplayText(object enumValue)
+{
+    Console.WriteLine(enumValue);
+    try
+    {
+        string intValuePrefix = ShowIntValues ? $"{(int)enumValue}: " : string.Empty;
+        var resourceManager = System.Resources.ResourceManager.CreateFileBasedResourceManager("SomeResources", "Resources", null);
+        var displayText = enumValue.GetType().GetMember(enumValue.ToString()).FirstOrDefault()?
+            .GetCustomAttributes(typeof(DisplayAttribute), false).FirstOrDefault() as DisplayAttribute;
+        if (displayText != null)
+        {
+            if (!string.IsNullOrEmpty(displayText.Name) && displayText.ResourceType != null)
+            {
+                //return resourceManager.GetString(displayText.Name);
+            }
+            return intValuePrefix + displayText.Name ?? displayText.Description;
+        }
+        return intValuePrefix + enumValue.ToString();
+    }
+    catch (Exception err)
+    {
+        Console.WriteLine(err);
+        return enumValue.ToString();
+    }
+}
+
+
+
+
+
+
+}

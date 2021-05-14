@@ -1,0 +1,18 @@
+﻿@page "/EnumSelect"
+
+
+@using BlazorEnumSelect.Models
+
+enum select her
+
+<EditForm Model="@someModel">
+
+    <p>Selected the some enum value: @someModel.SomeEnum</p>
+    <BlazorEnumSelect.Components.EnumSelectControl EnumType="typeof(SomeEnum)" TModel="SomeWrappingClassWithSomeEnum" For="@(m => m.SomeEnum)" />
+</EditForm>
+
+
+@code{
+    private SomeEnum someEnum = new SomeEnum();
+    private SomeWrappingClassWithSomeEnum someModel = new SomeWrappingClassWithSomeEnum();
+}
